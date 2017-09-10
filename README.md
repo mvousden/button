@@ -1,5 +1,5 @@
-A simple project to explore Python's intarfacing with SDL, which may evolve
-into something else as time goes on.
+A simple project to explore Lua's intarfacing with SDL, which may evolve into
+something else as time goes on.
 
 ---
 
