@@ -1,0 +1,2 @@
+Install luasdl (https://github.com/Tangent128/luasdl2) using luarocks (local),
+and added path definitions.
