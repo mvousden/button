@@ -4,18 +4,18 @@ local sdl = require("SDL")
 local sdlImage = require("SDL.image")
 
 -- SDL initialisation
-local returnCode, errorMessage = sdl.init(sdl.flags.Video,
+local returnCode, errorMsg = sdl.init(sdl.flags.Video,
                                           sdl.flags.Audio)
 if not returnCode then
-   error(errorMessage)
+   error(errorMsg)
 end
 
 -- SDL image initialisation
 local imageFlags={sdlImage.flags.PNG}
-local formatsLoaded, returnCode, errorMessage = sdlImage.init(imageFlags)
+local formatsLoaded, returnCode, errorMsg = sdlImage.init(imageFlags)
 for index, flag in ipairs(imageFlags) do
    if not formatsLoaded[flag] then
-      error(errorMessage)
+      error(errorMsg)
    end
 end
 
@@ -26,33 +26,37 @@ print(string.format("Initialised SDL Version %d.%d.%d", sdl.VERSION_MAJOR,
 -- Create a window.
 local windowSpec = {title="Tutorial SDL window",
                     flags= {sdl.window.Resizable}}
-local window, errorMessage = sdl.createWindow(windowSpec)
+local window, errorMsg = sdl.createWindow(windowSpec)
 if not window then
-   error(errorMessage)
+   error(errorMsg)
 end
 
 -- Create a renderer for the window.
-local renderer, errorMessage = sdl.createRenderer(window, 0, 0)
+local renderer, errorMsg = sdl.createRenderer(window, 0, 0)
 if not renderer then
-   error(errorMessage)
+   error(errorMsg)
 end
 
--- Load an image.
-local image, errorMessage = sdlImage.load("blue_square.png")
+-- Load an image as a texture.
+local image, errorMsg = sdlImage.load("blue_square.png")
 if not image then
-   error(errorMessage)
+   error(errorMsg)
 end
-local blueSquareTexture = renderer:createTextureFromSurface(image)
+
+local blueSquareTexture, errorMsg = renderer:createTextureFromSurface(image)
+if not blueSquareTexture then
+   error(errorMsg)
+end
 
 -- Draw the image using the renderer.
-local returnCode, errorMessage = renderer:clear()
+local returnCode, errorMsg = renderer:clear()
 if not returnCode then
-   error(errorMessage)
+   error(errorMsg)
 end
 
-local returnCode, errorMessage = renderer:copy(blueSquareTexture)
+local returnCode, errorMsg = renderer:copy(blueSquareTexture)
 if not returnCode then
-   error(errorMessage)
+   error(errorMsg)
 end
 
 renderer:present()
