@@ -66,6 +66,9 @@ while running do
       elseif event.type == sdl.event.KeyDown then
          print(string.format("key down: %d -> %s", event.keysym.sym,
                              sdl.getKeyName(event.keysym.sym)))
+      elseif event.type == sdl.event.KeyUp then
+         print(string.format("key up: %d -> %s", event.keysym.sym,
+                             sdl.getKeyName(event.keysym.sym)))
       elseif event.type == sdl.event.MouseWheel then
          print(string.format("mouse wheel: %d, x=%d, y=%d",
                              event.which, event.x, event.y))
