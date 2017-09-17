@@ -1,12 +1,22 @@
 #!/usr/bin/lua5.1
 
 local sdl = require("SDL")
+local sdlImage = require("SDL.image")
 
--- SDL Initialisation
+-- SDL initialisation
 local returnCode, errorMessage = sdl.init(sdl.flags.Video,
                                           sdl.flags.Audio)
 if not returnCode then
    error(errorMessage)
+end
+
+-- SDL image initialisation
+local imageFlags={sdlImage.flags.PNG}
+local formatsLoaded, returnCode, errorMessage = sdlImage.init(imageFlags)
+for index, flag in ipairs(imageFlags) do
+   if not formatsLoaded[flag] then
+      error(errorMessage)
+   end
 end
 
 -- Print SDL version.
@@ -20,6 +30,32 @@ local window, errorMessage = sdl.createWindow(windowSpec)
 if not window then
    error(errorMessage)
 end
+
+-- Create a renderer for the window.
+local renderer, errorMessage = sdl.createRenderer(window, 0, 0)
+if not renderer then
+   error(errorMessage)
+end
+
+-- Load an image.
+local image, errorMessage = sdlImage.load("blue_square.png")
+if not image then
+   error(errorMessage)
+end
+local blueSquareTexture = renderer:createTextureFromSurface(image)
+
+-- Draw the image using the renderer.
+local returnCode, errorMessage = renderer:clear()
+if not returnCode then
+   error(errorMessage)
+end
+
+local returnCode, errorMessage = renderer:copy(blueSquareTexture)
+if not returnCode then
+   error(errorMessage)
+end
+
+renderer:present()
 
 -- Poll for events, and print them.
 local running = true
