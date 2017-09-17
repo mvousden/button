@@ -25,7 +25,7 @@ print(string.format("Initialised SDL Version %d.%d.%d", sdl.VERSION_MAJOR,
 
 -- Create a window.
 local windowSpec = {title="Tutorial SDL window",
-                    flags= {sdl.window.Resizable}}
+                    flags={sdl.window.Resizable}}
 local window, errorMsg = sdl.createWindow(windowSpec)
 if not window then
    error(errorMsg)
