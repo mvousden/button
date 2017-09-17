@@ -48,41 +48,119 @@ if not blueSquareTexture then
    error(errorMsg)
 end
 
--- Draw the image using the renderer.
-local returnCode, errorMsg = renderer:clear()
-if not returnCode then
-   error(errorMsg)
-end
+-- Determine texture properties.
+local format, access, imageWidth, imageHeight = blueSquareTexture:query()
 
-local returnCode, errorMsg = renderer:copy(blueSquareTexture)
-if not returnCode then
-   error(errorMsg)
-end
-
-renderer:present()
-
--- Poll for events, and print them.
+-- Main loop.
+local boxDim = 100
+local position = {w=boxDim, h=boxDim}
 local running = true
+local movement = {}
+local loopPeriod = 1 / 60  -- Seconds
+local boxSpeed = 600  -- Pixels per second
+local velocityNormalizer = 0.707106  -- Square root of two.
+local previousFrameTime = sdl.getTicks()
 while running do
+
+   -- Event polling: q quits (and other quitting events also work), and keys
+   -- move the box.
    for event in sdl.pollEvent() do
+
       if event.type == sdl.event.Quit then
          running = false
+
       elseif event.type == sdl.event.KeyDown then
-         print(string.format("key down: %d -> %s", event.keysym.sym,
-                             sdl.getKeyName(event.keysym.sym)))
+         if sdl.getKeyName(event.keysym.sym) == "Q" then
+            running = false
+         elseif sdl.getKeyName(event.keysym.sym) == "Up" then
+            movement.up = true
+
+         elseif sdl.getKeyName(event.keysym.sym) == "Down" then
+            movement.down = true
+         elseif sdl.getKeyName(event.keysym.sym) == "Left" then
+            movement.left = true
+         elseif sdl.getKeyName(event.keysym.sym) == "Right" then
+            movement.right = true
+         end
+
       elseif event.type == sdl.event.KeyUp then
-         print(string.format("key up: %d -> %s", event.keysym.sym,
-                             sdl.getKeyName(event.keysym.sym)))
-      elseif event.type == sdl.event.MouseWheel then
-         print(string.format("mouse wheel: %d, x=%d, y=%d",
-                             event.which, event.x, event.y))
-      elseif event.type == sdl.event.MouseButtonDown then
-         print(string.format("mouse button down: %d, x=%d, y=%d",
-                             event.button, event.x, event.y))
-      elseif event.type == sdl.event.MouseMotion then
-         print(string.format("mouse motion: x=%d, y=%d", event.x, event.y))
+         if sdl.getKeyName(event.keysym.sym) == "Up" then
+            movement.up = false
+         elseif sdl.getKeyName(event.keysym.sym) == "Down" then
+            movement.down = false
+         elseif sdl.getKeyName(event.keysym.sym) == "Left" then
+            movement.left = false
+         elseif sdl.getKeyName(event.keysym.sym) == "Right" then
+            movement.right = false
+         end
       end
    end
+
+   -- Determine the vector of motion of the box.
+   local velocity = {x=0, y=0}
+
+   -- Horizontal motion
+   if movement.right then
+      velocity.x = 1
+   elseif movement.left then
+      velocity.x = -1
+   end
+
+   -- Vertical motion
+   if movement.up then
+      velocity.y = -1
+   elseif movement.down then
+      velocity.y = 1
+   end
+
+   -- Normalization
+   if velocity.x ~= 0 and velocity.y ~= 0 then
+      velocity.x = velocity.x * velocityNormalizer
+      velocity.y = velocity.y * velocityNormalizer
+   end
+
+   -- Determine the new position of the box. If the position is not known, put
+   -- the box in the centre.
+   local windowX, windowY = window:getSize()
+   if not position.x then
+      position.x = windowX / 2 - boxDim / 2
+      position.y = windowY / 2 - boxDim / 2
+   else
+      position.x = position.x + boxSpeed * velocity.x * loopPeriod
+      position.y = position.y + boxSpeed * velocity.y * loopPeriod
+   end
+
+   -- Don't let the box go out of bounds, recalling that the position of the
+   -- box represents its upper-left corner.
+   if position.x < 0 then
+      position.x = 0
+   elseif position.x > windowX - boxDim then
+      position.x = windowX - boxDim
+   end
+
+   if position.y < 0 then
+      position.y = 0
+   elseif position.y > windowY - boxDim then
+      position.y = windowY - boxDim
+   end
+
+   -- Draw to the display.
+   local returnCode, errorMsg = renderer:clear()
+   if not returnCode then
+      error(errorMsg)
+   end
+
+   local returnCode, errorMsg = renderer:copy(blueSquareTexture, nil, position)
+   if not returnCode then
+      error(errorMsg)
+   end
+   renderer:present()
+
+   -- Delay until end of frame.
+   local delay = loopPeriod * 1000 - sdl.getTicks() + previousFrameTime
+   sdl.delay(delay)
+   previousFrameTime = sdl.getTicks()
+
 end
 
 -- SDL Deinitialisation
