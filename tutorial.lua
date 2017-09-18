@@ -1,4 +1,4 @@
-#!/usr/bin/lua5.1
+#!/usr/bin/lua5.3
 
 local sdl = require("SDL")
 local sdlImage = require("SDL.image")
@@ -158,7 +158,7 @@ while running do
 
    -- Delay until end of frame.
    local delay = loopPeriod * 1000 - sdl.getTicks() + previousFrameTime
-   sdl.delay(delay)
+   sdl.delay(delay % 1 >= 0.5 and math.ceil(delay) or math.floor(delay))
    previousFrameTime = sdl.getTicks()
 
 end
