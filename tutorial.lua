@@ -59,7 +59,7 @@ local running = true
 local movement = {}
 local loopPeriod = 1 / 60  -- Seconds
 local boxSpeed = 600  -- Pixels per second
-local velocityNormalizer = 0.707106  -- Square root of two.
+local rootTwo = 0.707106  -- Square root of two.
 local previousFrameTime = sdl.getTicks()
 while running do
 
@@ -116,8 +116,8 @@ while running do
 
    -- Normalization
    if velocity.x ~= 0 and velocity.y ~= 0 then
-      velocity.x = velocity.x * velocityNormalizer
-      velocity.y = velocity.y * velocityNormalizer
+      velocity.x = velocity.x * rootTwo
+      velocity.y = velocity.y * rootTwo
    end
 
    -- Determine the new position of the box. If the position is not known, put
