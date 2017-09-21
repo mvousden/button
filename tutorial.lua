@@ -54,6 +54,7 @@ local format, access, imageWidth, imageHeight = blueSquareTexture:query()
 -- Main loop.
 local boxDim = 100
 local position = {w=boxDim, h=boxDim}
+local renderBox = position  -- Stores position co-ordinates as integers.
 local running = true
 local movement = {}
 local loopPeriod = 1 / 60  -- Seconds
@@ -123,8 +124,8 @@ while running do
    -- the box in the centre.
    local windowX, windowY = window:getSize()
    if not position.x then
-      position.x = windowX / 2 - boxDim / 2
-      position.y = windowY / 2 - boxDim / 2
+      position.x = math.floor(windowX / 2 - boxDim / 2)
+      position.y = math.floor(windowY / 2 - boxDim / 2)
    else
       position.x = position.x + boxSpeed * velocity.x * loopPeriod
       position.y = position.y + boxSpeed * velocity.y * loopPeriod
@@ -150,7 +151,13 @@ while running do
       error(errorMsg)
    end
 
-   local returnCode, errorMsg = renderer:copy(blueSquareTexture, nil, position)
+   -- Convert position co-ordinates to floats.
+
+   for key, value in pairs({x=position.x, y=position.y}) do
+      renderBox[key] = math.tointeger(math.floor(value))
+   end
+
+   local returnCode, errorMsg = renderer:copy(blueSquareTexture, nil, renderBox)
    if not returnCode then
       error(errorMsg)
    end
