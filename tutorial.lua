@@ -34,6 +34,9 @@ local returnCode, errorMsg = sdl.init(sdl.flags.Video,
 if not returnCode then
    error(errorMsg)
 end
+logWrite(2, string.format("SDL Initialised. Version: %d.%d.%d.",
+                          sdl.VERSION_MAJOR, sdl.VERSION_MINOR,
+                          sdl.VERSION_PATCH))
 
 -- SDL image initialisation
 local imageFlags={sdlImage.flags.PNG}
@@ -43,10 +46,7 @@ for index, flag in ipairs(imageFlags) do
       error(errorMsg)
    end
 end
-
--- Print SDL version.
-print(string.format("Initialised SDL Version %d.%d.%d", sdl.VERSION_MAJOR,
-                    sdl.VERSION_MINOR, sdl.VERSION_PATCH))
+logWrite(2, "SDL image module initialised.")
 
 -- Create a window.
 local windowSpec = {title="Tutorial SDL window",
@@ -55,18 +55,22 @@ local window, errorMsg = sdl.createWindow(windowSpec)
 if not window then
    error(errorMsg)
 end
+logWrite(2, "Window created.")
 
 -- Create a renderer for the window.
 local renderer, errorMsg = sdl.createRenderer(window, 0, 0)
 if not renderer then
    error(errorMsg)
 end
+logWrite(2, "Renderer created.")
 
 -- Load an image as a texture.
-local image, errorMsg = sdlImage.load("blue_square.png")
+local imagePath = "blue_square.png"
+local image, errorMsg = sdlImage.load(imagePath)
 if not image then
    error(errorMsg)
 end
+logWrite(2, string.format("Image at %s loaded.", imagePath))
 
 local blueSquareTexture, errorMsg = renderer:createTextureFromSurface(image)
 if not blueSquareTexture then
@@ -86,6 +90,8 @@ local loopPeriod = 1 / 60  -- Seconds
 local boxSpeed = 600  -- Pixels per second
 local rootTwo = 0.707106  -- Square root of two.
 local previousFrameTime = sdl.getTicks()
+
+logWrite(1, "Entering main loop.")
 while running do
 
    -- Event polling: q quits (and other quitting events also work), and keys
