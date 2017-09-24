@@ -3,6 +3,31 @@
 local sdl = require("SDL")
 local sdlImage = require("SDL.image")
 
+-- Logger setup.
+local logPath = "tutorial.log"
+local logLevels = {"DEBUG", "INFO", "WARNING", "ERROR"}
+
+-- Restrict the logging level to file and to standard output individually.
+local logFileLevel = 1
+local logStdoutLevel = 1
+
+function logWrite(level, message)
+
+   -- The message to write.
+   local toWrite = string.format("[%s] %s: %s", os.date("%T"),
+                                 logLevels[level], message)
+
+   if logPath and level >= logFileLevel then
+      local logFile = io.open(logPath, "a")
+      logFile:write(toWrite .. "\n")
+      logFile:close()
+   end
+
+   if level >= logStdoutLevel then
+      print(toWrite)
+   end
+end
+
 -- SDL initialisation
 local returnCode, errorMsg = sdl.init(sdl.flags.Video,
                                           sdl.flags.Audio)
