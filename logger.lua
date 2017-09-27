@@ -48,7 +48,9 @@ function message_to_logline(message, level)
 end
 
 
--- Logger class behaviour
+-- Logger class behaviour. Note that logging methods are defined in "create",
+-- because the place these functions write to are defined by the configuration
+-- at the top of this file, and are static.
 Logger = {}
 Logger.__index = Logger
 
@@ -116,6 +118,7 @@ end
 -- Singleton pattern functions.
 local _logger = nil  -- Holds the logger once created.
 
+
 function getLogger()
    -- Creates the logger if it has not already been initialised, and returns it
    -- if it has been.
@@ -129,5 +132,5 @@ function getLogger()
 end
 
 
--- Module table
+-- Module table.
 return {getLogger=getLogger}
