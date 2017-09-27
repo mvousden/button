@@ -43,7 +43,6 @@ function message_to_logline(message, level)
    --   message: String denoting message to write.
    --   level: Integer denoting the log level.
    -- Returns the line entry as a string.
-
    return string.format("[%s] %s: %s", os.date("%H:%M:%S"),
                         logLevels[level], message)
 end
@@ -66,22 +65,35 @@ function Logger:create()
    -- Define logging functions from the levels. Iterate over each log level and
    -- "predefine" a logging function for that level.
    for id, level in ipairs(logLevels) do
-      if logFileLevel > id and logStdoutLevel > id then
-         logger[string.lower(level)] = function(message) end
-      elseif logFileLevel > id and logStdoutLevel <= id then
-         logger[string.lower(level)] = function(message)
+
+      -- Log only to stdout for this level.
+      if (logFileLevel > id and logStdoutLevel <= id) or
+         (logFileLevel <= id and not logger.logFile and
+          logStdoutLevel <= id) then
+
+         logger[string.lower(level)] = function(logger, message)
             write_message_to_stdout(message, id)
          end
+
+      -- Log only to file for this level.
       elseif logFileLevel <= id and logger.logFile and logStdoutLevel > id then
-         logger[string.lower(level)] = function(message)
+
+         logger[string.lower(level)] = function(logger, message)
             write_message_to_file(message, logger.logFile, id)
          end
-      elseif logFileLevel <= id and logger.logFile and logStdoutLevel <= id then
-         logger[string.lower(level)] = function(message)
-            print(string.format("Printing %s", message))
+
+      -- Log to both file and stdout for this level.
+      elseif (logFileLevel <= id and logger.logFile and
+              logStdoutLevel <= id) then
+
+         logger[string.lower(level)] = function(logger, message)
             write_message_to_stdout(message, id)
             write_message_to_file(message, logger.logFile, id)
          end
+
+      -- Do not log for this level.
+      else
+         logger[string.lower(level)] = function(logger, message) end
       end
    end
 
@@ -90,14 +102,16 @@ end
 
 
 function Logger:__gc()
-   getLogger():debug("Log closed.")
+   -- The log file is now closed, if it was opened in the first place. We need
+   -- to open and close it to write the closing message.
+   if self.logFile then
+      self.logFile = io.open(logPath, "a")
+   end
+
+   self:info("Log closed.")
    self.logFile:close()
 end
 
--- http://lua-users.org/wiki/LuaClassesWithMetatable
--- http://lua-users.org/wiki/SimpleLuaClasses
--- https://stackoverflow.com/questions/3078440/destructors-in-lua#3078798
--- http://ultravisual.co.uk/blog/2012/01/29/singletons-in-lua/
 
 -- Singleton pattern functions.
 local _logger = nil  -- Holds the logger once created.
@@ -109,8 +123,7 @@ function getLogger()
       return _logger
    else
       _logger = Logger:create()
-      for key, value in pairs(_logger) do print(key, value) end
-      _logger:debug("Log opened.")
+      _logger:info("Log opened.")
       return _logger
    end
 end
