@@ -3,30 +3,7 @@
 local sdl = require("SDL")
 local sdlImage = require("SDL.image")
 
--- Logger setup.
-local logPath = "tutorial.log"
-local logLevels = {"DEBUG", "INFO", "WARNING", "ERROR"}
-
--- Restrict the logging level to file and to standard output individually.
-local logFileLevel = 1
-local logStdoutLevel = 1
-
-function logWrite(level, message)
-
-   -- The message to write.
-   local toWrite = string.format("[%s] %s: %s", os.date("%T"),
-                                 logLevels[level], message)
-
-   if logPath and level >= logFileLevel then
-      local logFile = io.open(logPath, "a")
-      logFile:write(toWrite .. "\n")
-      logFile:close()
-   end
-
-   if level >= logStdoutLevel then
-      print(toWrite)
-   end
-end
+local log = require("logger")
 
 -- SDL initialisation
 local returnCode, errorMsg = sdl.init(sdl.flags.Video,
@@ -34,9 +11,9 @@ local returnCode, errorMsg = sdl.init(sdl.flags.Video,
 if not returnCode then
    error(errorMsg)
 end
-logWrite(2, string.format("SDL Initialised. Version: %d.%d.%d.",
-                          sdl.VERSION_MAJOR, sdl.VERSION_MINOR,
-                          sdl.VERSION_PATCH))
+log.getLogger():info(string.format("SDL Initialised. Version: %d.%d.%d.",
+                     sdl.VERSION_MAJOR, sdl.VERSION_MINOR,
+                     sdl.VERSION_PATCH))
 
 -- SDL image initialisation
 local imageFlags={sdlImage.flags.PNG}
@@ -46,7 +23,7 @@ for index, flag in ipairs(imageFlags) do
       error(errorMsg)
    end
 end
-logWrite(2, "SDL image module initialised.")
+log.getLogger():info("SDL image module initialised.")
 
 -- Create a window.
 local windowSpec = {title="Tutorial SDL window",
@@ -55,14 +32,14 @@ local window, errorMsg = sdl.createWindow(windowSpec)
 if not window then
    error(errorMsg)
 end
-logWrite(2, "Window created.")
+log.getLogger():info("Window created.")
 
 -- Create a renderer for the window.
 local renderer, errorMsg = sdl.createRenderer(window, 0, 0)
 if not renderer then
    error(errorMsg)
 end
-logWrite(2, "Renderer created.")
+log.getLogger():info("Renderer created.")
 
 -- Load an image as a texture.
 local imagePath = "blue_square.png"
@@ -70,7 +47,7 @@ local image, errorMsg = sdlImage.load(imagePath)
 if not image then
    error(errorMsg)
 end
-logWrite(2, string.format("Image at %s loaded.", imagePath))
+log.getLogger():info(string.format("Image at %s loaded.", imagePath))
 
 local blueSquareTexture, errorMsg = renderer:createTextureFromSurface(image)
 if not blueSquareTexture then
@@ -91,7 +68,7 @@ local boxSpeed = 600  -- Pixels per second
 local rootTwo = 0.707106  -- Square root of two.
 local previousFrameTime = sdl.getTicks()
 
-logWrite(1, "Entering main loop.")
+log.getLogger():debug("Entering main loop.")
 while running do
 
    -- Event polling: q quits (and other quitting events also work), and keys
