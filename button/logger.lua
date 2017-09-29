@@ -133,4 +133,5 @@ end
 
 
 -- Module table.
-return {getLogger=getLogger}
+return {getLogger=getLogger, logPath=logPath, logFileLevel=logFileLevel,
+        logStdoutLevel=logStdoutLevel}
