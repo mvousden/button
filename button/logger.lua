@@ -33,9 +33,13 @@ function write_message_to_stdout(message, level)
    --   message: String denoting message to write.
    --   level: Integer denoting the log level.
    -- Returns nothing.
-   print(message_to_logline(message, level))
+   print_directly_to_stdout(message_to_logline(message, level))
 end
 
+function print_directly_to_stdout(formattedMessage)
+   -- Prints formattedMessage literally to standard output. Returns nothing.
+   print(formattedMessage)
+end
 
 function message_to_logline(message, level)
    -- Converts a logging message and a logging level to a line entry to be
@@ -100,18 +104,6 @@ function Logger:create()
    end
 
    return logger
-end
-
-
-function Logger:__gc()
-   -- The log file is now closed, if it was opened in the first place. We need
-   -- to open and close it to write the closing message.
-   if self.logFile then
-      self.logFile = io.open(logPath, "a")
-   end
-
-   self:info("Log closed.")
-   self.logFile:close()
 end
 
 

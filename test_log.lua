@@ -2,11 +2,8 @@
 
 function test_logger()
 
-   -- Import the logger.
-   log = require("button/logger")
-
-   -- Remove the logfile if it exists.
-   os.remove(log.logPath)
+   -- Suppress standard output.
+   stub(log._logger, "print_directly_to_stdout")
 
    -- Write a series of messages.
    log.getLogger():debug("A debug message")
@@ -23,4 +20,24 @@ function test_logger()
 
 end
 
-describe("Logger tests", function() it("Logger tests (it)", test_logger) end)
+function require_logger()
+   log = require("button/logger")
+end
+
+function clear_log()
+   os.remove(log.logPath)
+   log.getLogger()
+end
+
+function destroy_logger()
+   log._logger = nil
+end
+
+describe("Logger tests",
+         function()
+            local log
+            setup(require_logger)
+            before_each(clear_log)
+            after_each(destroy_logger)
+            it("Logger tests (it)", test_logger)
+         end)
