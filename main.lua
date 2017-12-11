@@ -3,7 +3,7 @@
 local sdl = require("SDL")
 local sdlImage = require("SDL.image")
 
-local log = require("logger")
+local log = require("button/logger")
 
 -- SDL initialisation
 local returnCode, errorMsg = sdl.init(sdl.flags.Video,
@@ -42,7 +42,7 @@ end
 log.getLogger():info("Renderer created.")
 
 -- Load an image as a texture.
-local imagePath = "blue_square.png"
+local imagePath = "button/blue_square.png"
 local image, errorMsg = sdlImage.load(imagePath)
 if not image then
    error(errorMsg)
