@@ -63,7 +63,7 @@ local position = {w=boxDim, h=boxDim}
 local renderBox = position  -- Stores position co-ordinates as integers.
 local running = true
 local movement = {}
-local loopPeriod = 1 / 60  -- Seconds
+local loopPeriod = 1 / 20  -- Seconds
 local boxSpeed = 600  -- Pixels per second
 local rootTwo = 0.707106  -- Square root of two.
 local previousFrameTime = sdl.getTicks()
@@ -160,7 +160,6 @@ while running do
    end
 
    -- Convert position co-ordinates to floats.
-
    for key, value in pairs({x=position.x, y=position.y}) do
       renderBox[key] = math.tointeger(math.floor(value))
    end
@@ -172,11 +171,16 @@ while running do
    renderer:present()
 
    -- Delay until end of frame.
-   local delay = loopPeriod * 1000 - sdl.getTicks() + previousFrameTime
+   local delay = (previousFrameTime + loopPeriod * 1000) - sdl.getTicks()
+   print(string.format("Current ticks: %f", sdl.getTicks()))
+   print(string.format("Previous frame ticks: %f", previousFrameTime))
+   print(string.format("Loop period: %f", loopPeriod * 1000))
+   print(string.format("Frame delay: %f", delay))
    sdl.delay(delay % 1 >= 0.5 and math.ceil(delay) or math.floor(delay))
    previousFrameTime = sdl.getTicks()
 
 end
 
 -- SDL Deinitialisation
+log.getLogger():info("Wrapping up.")
 sdl.quit()
