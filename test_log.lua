@@ -3,7 +3,7 @@
 function test_logger()
 
    -- Suppress standard output.
-   stub(log._logger, "print_directly_to_stdout")
+   --stub(log._logger, "print_directly_to_stdout")
 
    -- Write a series of messages.
    log.getLogger():debug("A debug message")
