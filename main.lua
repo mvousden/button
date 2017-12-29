@@ -4,26 +4,10 @@ local sdl = require("SDL")
 local sdlImage = require("SDL.image")
 
 local log = require("button/logger")
+local sdlInitialiser = require("button/sdl_initialiser")
 
 -- SDL initialisation
-local returnCode, errorMsg = sdl.init(sdl.flags.Video,
-                                          sdl.flags.Audio)
-if not returnCode then
-   error(errorMsg)
-end
-log.getLogger():info(string.format("SDL Initialised. Version: %d.%d.%d.",
-                     sdl.VERSION_MAJOR, sdl.VERSION_MINOR,
-                     sdl.VERSION_PATCH))
-
--- SDL image initialisation
-local imageFlags={sdlImage.flags.PNG}
-local formatsLoaded, returnCode, errorMsg = sdlImage.init(imageFlags)
-for index, flag in ipairs(imageFlags) do
-   if not formatsLoaded[flag] then
-      error(errorMsg)
-   end
-end
-log.getLogger():info("SDL image module initialised.")
+sdlInitialiser.initialise_all()
 
 -- Create a window.
 local windowSpec = {title="Tutorial SDL window",
