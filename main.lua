@@ -3,27 +3,15 @@
 local sdl = require("SDL")
 local sdlImage = require("SDL.image")
 
+local display = require("button/display")
 local log = require("button/logger")
 local sdlInitialiser = require("button/sdl_initialiser")
 
 -- SDL initialisation
 sdlInitialiser.initialise_all()
 
--- Create a window.
-local windowSpec = {title="Tutorial SDL window",
-                    flags={sdl.window.Resizable}}
-local window, errorMsg = sdl.createWindow(windowSpec)
-if not window then
-   error(errorMsg)
-end
-log.getLogger():info("Window created.")
-
--- Create a renderer for the window.
-local renderer, errorMsg = sdl.createRenderer(window, 0, 0)
-if not renderer then
-   error(errorMsg)
-end
-log.getLogger():info("Renderer created.")
+-- Create a display.
+display.getDisplay()
 
 -- Load an image as a texture.
 local imagePath = "button/blue_square.png"
