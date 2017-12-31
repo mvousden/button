@@ -13,7 +13,7 @@ Display = {}
 Display.__index = Display
 
 
-function Display::create(args)
+function Display:create(args)
    -- Creates a display (window and renderer) using SDL. Input arguments:
    --  - args: Table of arguments to pass to sdl.createWindow if the display
    --    has not been created. Is not used otherwise
@@ -26,8 +26,13 @@ function Display::create(args)
    -- entries are missing.
    local defaultWindowSpec = {title="Tutorial SDL window",
                               flags={sdl.window.Resizable}}
-   -- <!> Merge args with defaultWindowSpec
-   local window, errorMsg = sdl.createWindow(args + defaultWindowSpec)
+   if args then
+      for key, value in pairs(args) do
+         defaultWindowSpec[key] = value
+      end
+   end
+
+   local window, errorMsg = sdl.createWindow(defaultWindowSpec)
    if not window then
       error(errorMsg)
    end
