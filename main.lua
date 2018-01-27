@@ -21,7 +21,7 @@ if not image then
 end
 log.getLogger():info(string.format("Image at %s loaded.", imagePath))
 
-local blueSquareTexture, errorMsg = renderer:createTextureFromSurface(image)
+local blueSquareTexture, errorMsg = display.getDisplay().renderer:createTextureFromSurface(image)
 if not blueSquareTexture then
    error(errorMsg)
 end
@@ -102,7 +102,7 @@ while running do
 
    -- Determine the new position of the box. If the position is not known, put
    -- the box in the centre.
-   local windowX, windowY = window:getSize()
+   local windowX, windowY = display.getDisplay().window:getSize()
    if not position.x then
       position.x = math.floor(windowX / 2 - boxDim / 2)
       position.y = math.floor(windowY / 2 - boxDim / 2)
@@ -126,7 +126,7 @@ while running do
    end
 
    -- Draw to the display.
-   local returnCode, errorMsg = renderer:clear()
+   local returnCode, errorMsg = display.getDisplay().renderer:clear()
    if not returnCode then
       error(errorMsg)
    end
@@ -136,11 +136,11 @@ while running do
       renderBox[key] = math.tointeger(math.floor(value))
    end
 
-   local returnCode, errorMsg = renderer:copy(blueSquareTexture, nil, renderBox)
+   local returnCode, errorMsg = display.getDisplay().renderer:copy(blueSquareTexture, nil, renderBox)
    if not returnCode then
       error(errorMsg)
    end
-   renderer:present()
+   display.getDisplay().renderer:present()
 
    -- Delay until end of frame.
    local delay = (previousFrameTime + loopPeriod * 1000) - sdl.getTicks()
