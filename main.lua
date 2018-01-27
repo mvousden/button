@@ -3,7 +3,7 @@
 local sdl = require("SDL")
 local sdlImage = require("SDL.image")
 
-local display = require("button/display")
+local displayLib = require("button/display")
 local log = require("button/logger")
 local sdlInitialiser = require("button/sdl_initialiser")
 
@@ -11,7 +11,7 @@ local sdlInitialiser = require("button/sdl_initialiser")
 sdlInitialiser.initialise_all()
 
 -- Create a display.
-display.getDisplay()
+display = displayLib.getDisplay()
 
 -- Load an image as a texture.
 local imagePath = "button/blue_square.png"
@@ -21,7 +21,7 @@ if not image then
 end
 log.getLogger():info(string.format("Image at %s loaded.", imagePath))
 
-local blueSquareTexture, errorMsg = display.getDisplay().renderer:createTextureFromSurface(image)
+local blueSquareTexture, errorMsg = display.renderer:createTextureFromSurface(image)
 if not blueSquareTexture then
    error(errorMsg)
 end
@@ -102,7 +102,7 @@ while running do
 
    -- Determine the new position of the box. If the position is not known, put
    -- the box in the centre.
-   local windowX, windowY = display.getDisplay().window:getSize()
+   local windowX, windowY = display.window:getSize()
    if not position.x then
       position.x = math.floor(windowX / 2 - boxDim / 2)
       position.y = math.floor(windowY / 2 - boxDim / 2)
@@ -126,7 +126,7 @@ while running do
    end
 
    -- Draw to the display.
-   local returnCode, errorMsg = display.getDisplay().renderer:clear()
+   local returnCode, errorMsg = display.renderer:clear()
    if not returnCode then
       error(errorMsg)
    end
@@ -136,11 +136,11 @@ while running do
       renderBox[key] = math.tointeger(math.floor(value))
    end
 
-   local returnCode, errorMsg = display.getDisplay().renderer:copy(blueSquareTexture, nil, renderBox)
+   local returnCode, errorMsg = display.renderer:copy(blueSquareTexture, nil, renderBox)
    if not returnCode then
       error(errorMsg)
    end
-   display.getDisplay():update()
+   display:update()
 
    -- Delay until end of frame.
    local delay = (previousFrameTime + loopPeriod * 1000) - sdl.getTicks()
