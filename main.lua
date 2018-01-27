@@ -47,7 +47,7 @@ local position = {w=boxDim, h=boxDim}
 local renderBox = position  -- Stores position co-ordinates as integers.
 local running = true
 local movement = {}
-local loopPeriod = 1 / 20  -- Seconds
+local loopPeriod = 1 / 60  -- Seconds
 local boxSpeed = 600  -- Pixels per second
 local rootTwo = 0.707106  -- Square root of two.
 local previousFrameTime = sdl.getTicks()
