@@ -140,7 +140,7 @@ while running do
    if not returnCode then
       error(errorMsg)
    end
-   display.getDisplay().renderer:present()
+   display.getDisplay():update()
 
    -- Delay until end of frame.
    local delay = (previousFrameTime + loopPeriod * 1000) - sdl.getTicks()

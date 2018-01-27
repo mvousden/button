@@ -51,6 +51,13 @@ function Display:create(args)
    return display
 end
 
+
+function Display:update()
+   -- Updates the display with render operations since the previous
+   -- call. Returns nothing.
+   self.renderer:present()
+end
+
 -- Singleton logic.
 local _display = nil  -- Holds the display once created.
 
