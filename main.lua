@@ -125,17 +125,12 @@ while running do
       position.y = windowY - boxDim
    end
 
-   -- Draw to the display.
-   local returnCode, errorMsg = display.renderer:clear()
-   if not returnCode then
-      error(errorMsg)
-   end
-
    -- Convert position co-ordinates to floats.
    for key, value in pairs({x=position.x, y=position.y}) do
       renderBox[key] = math.tointeger(math.floor(value))
    end
 
+   -- Draw to the display.
    local returnCode, errorMsg = display.renderer:copy(blueSquareTexture, nil, renderBox)
    if not returnCode then
       error(errorMsg)

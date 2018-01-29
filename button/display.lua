@@ -54,8 +54,12 @@ end
 
 function Display:update()
    -- Updates the display with render operations since the previous
-   -- call. Returns nothing.
+   -- call, then clears the renderer. Returns nothing.
    self.renderer:present()
+   local returnCode, errorMsg = self.renderer:clear()
+   if not returnCode then
+      error(errorMsg)
+   end
 end
 
 -- Singleton logic.
