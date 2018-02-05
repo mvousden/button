@@ -3,15 +3,12 @@
 local sdl = require("SDL")
 local sdlImage = require("SDL.image")
 
-local displayLib = require("button/display")
+local display = require("button/display")
 local log = require("button/logger")
 local sdlInitialiser = require("button/sdl_initialiser")
 
 -- SDL initialisation
 sdlInitialiser.initialise_all()
-
--- Create a display.
-display = displayLib.getDisplay()
 
 -- Load an image as a texture.
 local imagePath = "button/blue_square.png"

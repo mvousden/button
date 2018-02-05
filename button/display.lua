@@ -1,14 +1,12 @@
 -- Defines a simple singleton display class, which interfaces with SDL to
--- display a window to the user. The display is created by calling getDisplay.
+-- display a window to the user. The module table is the instance of display.
 
 local sdl = require("SDL")
 local log = require("button/logger")
 
--- Default configuration (used at display creation time).
+
 local title = "SDL window"
 local flags = {sdl.window.Resizable}
-
--- Display class behaviour.
 Display = {}
 Display.__index = Display
 
@@ -62,20 +60,6 @@ function Display:update()
    end
 end
 
--- Singleton logic.
-local _display = nil  -- Holds the display once created.
 
-
-function getDisplay(args)
-   -- Creates the display if it has not already been initialised, and returns
-   -- it if it has been. Input arguments:
-   --  - args: Table of arguments to pass to sdl.createWindow if the display
-   --    has not been created. Is not used otherwise
-   if not _display then
-      _display = Display:create(args)
-   end
-   return _display
-end
-
--- Module table.
-return {getDisplay=getDisplay}
+-- Module table, simply creates the display and returns its table.
+return Display:create()
