@@ -30,18 +30,12 @@ function Display:create(args)
       end
    end
 
-   local window, errorMsg = sdl.createWindow(defaultWindowSpec)
-   if not window then
-      error(errorMsg)
-   end
+   local window = assert(sdl.createWindow(defaultWindowSpec))
    display.window = window
    log.getLogger():info("Window created.")
 
    -- Create a renderer targetting that window.
-   local renderer, errorMsg = sdl.createRenderer(display.window, 0, 0)
-   if not renderer then
-      error(errorMsg)
-   end
+   local renderer = assert(sdl.createRenderer(display.window, 0, 0))
    display.renderer = renderer
    log.getLogger():info("Renderer created.")
 
@@ -54,10 +48,7 @@ function Display:update()
    -- Updates the display with render operations since the previous
    -- call, then clears the renderer. Returns nothing.
    self.renderer:present()
-   local returnCode, errorMsg = self.renderer:clear()
-   if not returnCode then
-      error(errorMsg)
-   end
+   local returnCode = assert(self.renderer:clear())
 end
 
 

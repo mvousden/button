@@ -15,10 +15,7 @@ end
 function initialise_sdl_core()
    -- Initialises SDL. Returns nothing, but exits if SDL could not be
    -- initialised.
-   local returnCode, errorMsg = sdl.init(sdl.flags.Video, sdl.flags.Audio)
-   if not returnCode then
-      error(errorMsg)
-   end
+   local returnCode = assert(sdl.init(sdl.flags.Video, sdl.flags.Audio))
    log.getLogger():info(string.format("SDL Initialised. Version: %d.%d.%d.",
                                       sdl.VERSION_MAJOR, sdl.VERSION_MINOR,
                                       sdl.VERSION_PATCH))

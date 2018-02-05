@@ -12,16 +12,10 @@ sdlInitialiser.initialise_all()
 
 -- Load an image as a texture.
 local imagePath = "button/blue_square.png"
-local image, errorMsg = sdlImage.load(imagePath)
-if not image then
-   error(errorMsg)
-end
+local image = assert(sdlImage.load(imagePath))
 log.getLogger():info(string.format("Image at %s loaded.", imagePath))
 
-local blueSquareTexture, errorMsg = display.renderer:createTextureFromSurface(image)
-if not blueSquareTexture then
-   error(errorMsg)
-end
+local blueSquareTexture = assert(display.renderer:createTextureFromSurface(image))
 
 -- Determine texture properties.
 local format, access, imageWidth, imageHeight = blueSquareTexture:query()
@@ -128,10 +122,7 @@ while running do
    end
 
    -- Draw to the display.
-   local returnCode, errorMsg = display.renderer:copy(blueSquareTexture, nil, renderBox)
-   if not returnCode then
-      error(errorMsg)
-   end
+   assert(display.renderer:copy(blueSquareTexture, nil, renderBox))
    display:update()
 
    -- Delay until end of frame.
